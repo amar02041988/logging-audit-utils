@@ -1,0 +1,16 @@
+{
+  "name": "logging-audit-utils",
+  "version": "1.0.0",
+  "description": "This is simple logging and audit utility",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\""
+  },
+  "author": "Amar Panigrahy",
+  "license": "ISC",
+  "dependencies": {
+    "winston": "^3.8.2",
+    "app-root-path": "^3.1.0",
+    "find": "^0.3.0"
+  }
+}
