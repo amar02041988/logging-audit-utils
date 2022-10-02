@@ -1,10 +1,9 @@
 process.env.LOG_LEVEL = 'info';
-const loggerPackage = require("./winston");
-const logger = loggerPackage.getLogger("componentName", "fileName");
+const loggingAuditUtils = require("../logging-audit-utils");
 
-const AuditLogger = require("./AuditLogger");
+const logger = loggingAuditUtils.Logger.getLogger("com", "f");
+const workflowStatuses = loggingAuditUtils.Statuses.WORKFLOW;
 
-const WORKFLOW_STATUS = AuditLogger.STATUS.WORKFLOW;
-let auditLog = new AuditLogger.AuditLogger.Builder(logger,{});
-auditLog.withWorkflowStatus(WORKFLOW_STATUS.STARTED).withWorkflowInfo("Workflow Data").build().generateAuditlog();
+let auditLog = new loggingAuditUtils.AuditLogger.Builder(logger, {});
+auditLog.withWorkflowStatus(workflowStatuses.STARTED).withWorkflowInfo("sample data").build().generateAuditlog();
 

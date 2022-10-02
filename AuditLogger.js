@@ -1,23 +1,3 @@
-const STATUS = {
-    STEP: {
-        ENQUEUED: "enqueued",
-        STARTED: "started",
-        SUCCESS: "success",
-        ERROR: "error"
-    },
-    ENTITY: {
-        STARTED: "started",
-        SUCCESS: "success",
-        ERROR: "error"
-    },
-    WORKFLOW: {
-        STARTED: "started",
-        SUCCESS: "success",
-        ERROR: "error"
-    }
-
-}
-
 class AuditLogger {
 
     constructor(builder) {
@@ -160,4 +140,4 @@ class AuditLogger {
     }
 }
 
-module.exports = { AuditLogger, STATUS };
+module.exports = { AuditLogger };
