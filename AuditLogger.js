@@ -53,6 +53,18 @@ class AuditLogger {
                 this.dateTime = new Date().toISOString();
             }
 
+            withCorrelationId(correlationId) {
+                this.correlationId = correlationId;
+                return this;
+            }
+            withPartner(partner) {
+                this.partner = partner;
+                return this;
+            }
+            withCustomer(customer) {
+                this.customer = customer;
+                return this;
+            }
             withStepCategory(stepCategory) {
                 this.stepCategory = stepCategory;
                 return this;
