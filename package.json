@@ -1,6 +1,6 @@
 {
   "name": "logging-audit-utils",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "This is simple logging and audit utility",
   "main": "index.js",
   "scripts": {
