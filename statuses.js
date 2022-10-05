@@ -7,9 +7,12 @@ const statuses = {
     },
     ENTITY: {
         STARTED: "started",
-        BEGIN: "begin",
-        STAGED: "staged",
-        COMPLETED: "completed",
+        EVALUATION_STARTED: "evaluation_started",
+        EVALUATION_COMPLETED: "evaluation_completed",
+        STAGING_STARTED: "staging_started",
+        STAGING_COMPLETED: "staging_completed",
+        POST_STAGING_STARTED: "post_stating_started",
+        POST_STAGING_COMPLETED: "post_staging_completed",
         SUCCESS: "success",
         ERROR: "error"
     },
