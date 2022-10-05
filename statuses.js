@@ -9,15 +9,18 @@ const statuses = {
     ENTITY: {
         STARTED: "started",
         EVALUATION_STARTED: "evaluation_started",
-        EVALUATION_COMPLETED: "evaluation_completed",
+        EVALUATION_ERROR: "evaluation_error",
+        EVALUATION_SUCCESS: "evaluation_success",
         STAGING_STARTED: "staging_started",
-        STAGING_COMPLETED: "staging_completed",
+        STAGING_ERROR: "staging_error",
+        STAGING_SUCCESS: "staging_success",
         POST_STAGING_STARTED: "post_stating_started",
-        POST_STAGING_COMPLETED: "post_staging_completed",
+        POST_STAGING_ERROR: "post_stating_error",
+        POST_STAGING_SUCCESS: "post_staging_success",
         SUCCESS: "success",
         ERROR: "error"
     },
-    
+
     WORKFLOW: {
         STARTED: "started",
         SUCCESS: "success",
