@@ -5,6 +5,7 @@ const statuses = {
         SUCCESS: "success",
         ERROR: "error"
     },
+
     ENTITY: {
         STARTED: "started",
         EVALUATION_STARTED: "evaluation_started",
@@ -16,6 +17,7 @@ const statuses = {
         SUCCESS: "success",
         ERROR: "error"
     },
+    
     WORKFLOW: {
         STARTED: "started",
         SUCCESS: "success",
@@ -24,4 +26,4 @@ const statuses = {
 
 }
 
-module.exports = { statuses }
+module.exports = { statuses } 
