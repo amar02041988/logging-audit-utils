@@ -30,6 +30,12 @@ if (files) {
     }
 }
 
+var transportsArr = [];
+console.log("Loading winston transports");
+for (let i = 0; i < logConfig.appenders.length; i++) {
+    var appender = logConfig.appenders[i];
+    transportsArr.push(new appender.type(appender.options));
+}
 
 const addTraceId = printf(({
     level,
@@ -55,11 +61,7 @@ exports.getLogger = (component, filename, correlationId, identities) => {
     if (!filename) {
         throw new Error("Missing filename in logger");
     }
-    var transportsArr = [];
-    for (let i = 0; i < logConfig.appenders.length; i++) {
-        var appender = logConfig.appenders[i];
-        transportsArr.push(new appender.type(appender.options));
-    }
+
     const params = { "component": component, "filename": filename, "correlationId": correlationId };
     identities = !identities ? {} : identities;
     params.identites = identities;
