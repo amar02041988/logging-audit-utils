@@ -7,6 +7,9 @@ const statuses = {
     },
     ENTITY: {
         STARTED: "started",
+        BEGIN: "begin",
+        STAGED: "staged",
+        COMPLETED: "completed",
         SUCCESS: "success",
         ERROR: "error"
     },
