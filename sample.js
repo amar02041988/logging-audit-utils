@@ -6,4 +6,4 @@ const workflowStatuses = loggingAuditUtils.Statuses.WORKFLOW;
 
 let auditLog = new loggingAuditUtils.AuditLogger.Builder(logger, {});
 auditLog.withWorkflowStatus(workflowStatuses.STARTED).withWorkflowInfo("sample data").build().generateAuditlog();
-
+logger.notice("hiiiii");

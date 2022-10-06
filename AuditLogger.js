@@ -136,10 +136,12 @@ class AuditLogger {
             filename: this.filename,
             customer: this.customer,
             partner: this.partner,
+            stepCategory: this.stepCategory,
+            stepStatus: this.stepStatus,
+            entity: this.entity,
+            entityStatus: this.entityStatus,
             workflowInfo: this.workflowInfo,
             workflowStatus: this.workflowStatus,
-            stepStatus: this.stepStatus,
-            entityStatus: this.entityStatus,
             error: this.error
         };
     }
