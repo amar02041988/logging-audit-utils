@@ -120,7 +120,6 @@ class AuditLogger {
 
 
             build() {
-                this.logger.debug(`Started object building`);
                 return new AuditLogger(this);
             }
         }
