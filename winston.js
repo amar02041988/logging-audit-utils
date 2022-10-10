@@ -71,13 +71,6 @@ exports.getLogger = (filename, correlationId, identities, options) => {
 
     identities = !identities ? {} : identities;
 
-    logger.params = {
-        correlationId: correlationId,
-        component: component,
-        filename: filename,
-        identities: identities
-    };
-
     const params = { "component": component, "filename": filename, "correlationId": correlationId };
     params.identites = identities;
 
@@ -93,6 +86,13 @@ exports.getLogger = (filename, correlationId, identities, options) => {
         transports: transportsArr,
         exitOnError: false
     });
+
+    logger.params = {
+        correlationId: correlationId,
+        component: component,
+        filename: filename,
+        identities: identities
+    };
 
     return logger;
 };
