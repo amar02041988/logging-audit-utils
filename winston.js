@@ -59,7 +59,7 @@ exports.getLogger = (filename, correlationId, identities, options) => {
     if (options && options.component) {
         component = options.component;
     } else {
-        component = process.env.component;
+        component = process.env.COMPONENT;
     }
 
     if (!component) {
