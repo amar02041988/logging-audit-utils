@@ -129,6 +129,7 @@ class AuditLogger {
 
     toAuditMessage() {
         return {
+            messageType: "audit",
             dateTime: this.dateTime,
             correlationId: this.correlationId,
             component: this.component,

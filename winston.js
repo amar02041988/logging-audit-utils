@@ -54,7 +54,14 @@ const addTraceId = printf(({
 });
 
 // instantiate a new Winston Logger with the settings defined above
-exports.getLogger = (component, filename, correlationId, identities) => {
+exports.getLogger = (filename, correlationId, identities, options) => {
+    let component = undefined;
+    if (options && options.component) {
+        component = options.component;
+    } else {
+        component = process.env.component;
+    }
+
     if (!component) {
         throw new Error("Missing component in logger");
     }
@@ -62,8 +69,16 @@ exports.getLogger = (component, filename, correlationId, identities) => {
         throw new Error("Missing filename in logger");
     }
 
-    const params = { "component": component, "filename": filename, "correlationId": correlationId };
     identities = !identities ? {} : identities;
+
+    logger.params = {
+        correlationId: correlationId,
+        component: component,
+        filename: filename,
+        identities: identities
+    };
+
+    const params = { "component": component, "filename": filename, "correlationId": correlationId };
     params.identites = identities;
 
     const logger = createLogger({
@@ -79,12 +94,6 @@ exports.getLogger = (component, filename, correlationId, identities) => {
         exitOnError: false
     });
 
-    logger.params = {
-        correlationId: correlationId,
-        component: component,
-        filename: filename,
-        identities: identities
-    };
     return logger;
 };
 
