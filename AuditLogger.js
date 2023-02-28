@@ -8,6 +8,7 @@ class AuditLogger {
         this.filename = builder.filename;
         this.customer = builder.customer;
         this.partner = builder.partner;
+        this.correlationId = builder.correlationId;
 
         this.stepCategory = builder.stepCategory;
 
