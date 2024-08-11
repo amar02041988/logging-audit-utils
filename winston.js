@@ -15,23 +15,23 @@ const {
 
 var logConfig = undefined;
 
-//console.log("Root path " + appRoot.path);
+// console.log("Root path " + appRoot.path);
 
 let files = find.fileSync(/\log-config.js$/, appRoot.path);
-console.log(JSON.stringify(files));
+// console.log(JSON.stringify(files));
 
 if (files) {
     if (files && files.length > 0) {
-        console.log('log-config.js file found in current base path');
+        // console.log('log-config.js file found in current base path');
         logConfig = require(files[0]);
     } else {
-        console.log('External log-config.js file not found, loading default');
+        // console.log('External log-config.js file not found, loading default');
         logConfig = require('./log-config.js');
     }
 }
 
 var transportsArr = [];
-console.log("Loading winston transports");
+// console.log("Loading winston transports");
 for (let i = 0; i < logConfig.appenders.length; i++) {
     var appender = logConfig.appenders[i];
     transportsArr.push(new appender.type(appender.options));
