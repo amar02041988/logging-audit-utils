@@ -41,7 +41,7 @@ class AuditLogger {
                 this.logger = logger;
                 this.options = options;
 
-                const params = logger.params
+                const params = logger.params;
 
                 this.component = params.component;
                 this.filename = params.filename;
@@ -50,6 +50,13 @@ class AuditLogger {
                 const identities = params.identities;
                 this.customer = identities.customer;
                 this.partner = identities.partner;
+
+                // Copy options attributes from logger.params
+                Object.keys(params).forEach(key => {
+                    if (key !== 'component' && key !== 'filename' && key !== 'correlationId' && key !== 'identities') {
+                        this[key] = params[key];
+                    }
+                });
 
                 this.dateTime = new Date().toISOString();
             }
@@ -119,7 +126,6 @@ class AuditLogger {
                 return this;
             }
 
-
             build() {
                 return new AuditLogger(this);
             }
@@ -129,7 +135,7 @@ class AuditLogger {
     }
 
     toAuditMessage() {
-        return {
+        const message = {
             messageType: "audit",
             dateTime: this.dateTime,
             correlationId: this.correlationId,
@@ -145,7 +151,22 @@ class AuditLogger {
             workflowStatus: this.workflowStatus,
             error: this.error
         };
+
+        // Add options attributes from logger.params
+        const params = this.logger.params;
+        Object.keys(params).forEach(key => {
+            if (key !== 'component' && 
+                key !== 'filename' && 
+                key !== 'correlationId' && 
+                key !== 'identities' && 
+                !message.hasOwnProperty(key)) {
+                message[key] = params[key];
+            }
+        });
+
+        return message;
     }
+
     generateAuditlog() {
         try {
             console.log(JSON.stringify(this.toAuditMessage()));
