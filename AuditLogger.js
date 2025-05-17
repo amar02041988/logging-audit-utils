@@ -27,7 +27,7 @@ class AuditLogger {
         this.recordAuditQuery = builder.recordAuditQuery;
         this.recordAuditFlag = builder.recordAuditFlag || false;
         this.isSenstiveData = builder.isSenstiveData || false;
-
+        this.messageType = builder.messageType;
         this.options = builder.options;
     }
 
@@ -126,7 +126,19 @@ class AuditLogger {
                 return this;
             }
 
+            resolveMessageType() {
+                let messageType = "audit";
+                if (this.recordAuditFlag) {
+                    messageType += "_record";
+                }
+                if (this.isSenstiveData) {
+                    messageType += "_sensitive";
+                }
+                return messageType;
+            }
+
             build() {
+                this.messageType = this.resolveMessageType();
                 return new AuditLogger(this);
             }
         }
@@ -136,7 +148,7 @@ class AuditLogger {
 
     toAuditMessage() {
         const message = {
-            messageType: "audit",
+            messageType: this.messageType,
             dateTime: this.dateTime,
             correlationId: this.correlationId,
             component: this.component,
@@ -149,16 +161,17 @@ class AuditLogger {
             entityStatus: this.entityStatus,
             workflowInfo: this.workflowInfo,
             workflowStatus: this.workflowStatus,
-            error: this.error
+            error: this.error,
+            recordAuditFlag: this.recordAuditFlag
         };
 
         // Add options attributes from logger.params
         const params = this.logger.params;
         Object.keys(params).forEach(key => {
-            if (key !== 'component' && 
-                key !== 'filename' && 
-                key !== 'correlationId' && 
-                key !== 'identities' && 
+            if (key !== 'component' &&
+                key !== 'filename' &&
+                key !== 'correlationId' &&
+                key !== 'identities' &&
                 !message.hasOwnProperty(key)) {
                 message[key] = params[key];
             }
@@ -169,7 +182,9 @@ class AuditLogger {
 
     generateAuditlog() {
         try {
-            console.log(JSON.stringify(this.toAuditMessage()));
+            if (!this.isSenstiveData) {
+                console.log(JSON.stringify(this.toAuditMessage()));
+            }
         } catch (err) {
             console.error(err);
         }
