@@ -1,8 +1,14 @@
 class AuditLogger {
 
     constructor(builder) {
+        this.projectCode = builder.projectCode;
+        this.region = builder.region;
+        this.country = builder.country;
+
         this.logger = builder.logger;
         this.dateTime = builder.dateTime;
+        this.projectCode = builder.projectCode;
+        this.country = builder.country;
 
         this.component = builder.component;
         this.filename = builder.filename;
@@ -34,6 +40,10 @@ class AuditLogger {
     static get Builder() {
         class Builder {
             constructor(logger, options) {
+                this.projectCode = undefined;
+                this.region = undefined;
+                this.coountry = undefined;
+
                 if (!logger) {
                     throw new Error("Missing Logger");
                 }
@@ -59,6 +69,21 @@ class AuditLogger {
                 });
 
                 this.dateTime = new Date().toISOString();
+            }
+
+            withProjectCode(region) {
+                this.projectCode = projectCode;
+                return this;
+            }
+
+            withRegion(region) {
+                this.region = region;
+                return this;
+            }
+
+            withCountry(country) {
+                this.country = country;
+                return this;
             }
 
             withCorrelationId(correlationId) {
@@ -138,6 +163,15 @@ class AuditLogger {
             }
 
             build() {
+                if (this.recordAuditFlag) {
+                    const requiredAttributes = ["projectCode", "partner", "customer", "component", "region", "country"];
+                    for (let attr of requiredAttributes) {
+                        if (!this[attr]) {
+                            throw new Error(`Setting recordAuditFlag=true, requires mandatory attributes: [${requiredAttributes}]`);
+                        }
+                    }
+                }
+
                 this.messageType = this.resolveMessageType();
                 return new AuditLogger(this);
             }
@@ -148,6 +182,9 @@ class AuditLogger {
 
     toAuditMessage() {
         const message = {
+            projectCode: this.projectCode,
+            region: this.region,
+            country: this.country,
             messageType: this.messageType,
             dateTime: this.dateTime,
             correlationId: this.correlationId,

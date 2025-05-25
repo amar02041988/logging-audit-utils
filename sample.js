@@ -8,8 +8,8 @@ const correlation_id = crypto.randomUUID();
 let options = {
     correlation_id: correlation_id,
     identites:{
-        customer: "bank1",
-        partner: "experion"
+        customer: "test-cutomer",
+        partner: "test-partner"
     }
 }
 
@@ -23,6 +23,7 @@ auditLogger.withStepCategory("invocation").withEntity("ip")
     .withRecordAuditFlag(true)
     .build().
     generateAuditlog();
+    
 auditLogger.withStepCategory("invocation").withEntity("ip")
     .withStepStatus(Statuses.ENTITY.SUCCESS)
     .withWorkflowInfo("Request Completed")
