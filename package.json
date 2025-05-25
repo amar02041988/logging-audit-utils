@@ -8,7 +8,7 @@
     "README.md"
   ],
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "jest"
   },
   "keywords": [
     "logging",
@@ -20,9 +20,9 @@
   "author": "Amar Panigrahy",
   "license": "ISC",
   "dependencies": {
-    "winston": "^3.8.2",
     "app-root-path": "^3.1.0",
-    "find": "^0.3.0"
+    "find": "^0.3.0",
+    "winston": "^3.8.2"
   },
   "repository": {
     "type": "git",
@@ -37,5 +37,8 @@
   },
   "publishConfig": {
     "access": "public"
+  },
+  "devDependencies": {
+    "jest": "^29.7.0"
   }
-} 
+}

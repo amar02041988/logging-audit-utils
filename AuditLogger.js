@@ -71,7 +71,7 @@ class AuditLogger {
                 this.dateTime = new Date().toISOString();
             }
 
-            withProjectCode(region) {
+            withProjectCode(projectCode) {
                 this.projectCode = projectCode;
                 return this;
             }
