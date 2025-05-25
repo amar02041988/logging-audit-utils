@@ -1,8 +1,14 @@
 class AuditLogger {
 
     constructor(builder) {
+        this.projectCode = builder.projectCode;
+        this.region = builder.region;
+        this.country = builder.country;
+
         this.logger = builder.logger;
         this.dateTime = builder.dateTime;
+        this.projectCode = builder.projectCode;
+        this.country = builder.country;
 
         this.component = builder.component;
         this.filename = builder.filename;
@@ -27,13 +33,17 @@ class AuditLogger {
         this.recordAuditQuery = builder.recordAuditQuery;
         this.recordAuditFlag = builder.recordAuditFlag || false;
         this.isSenstiveData = builder.isSenstiveData || false;
-
+        this.messageType = builder.messageType;
         this.options = builder.options;
     }
 
     static get Builder() {
         class Builder {
             constructor(logger, options) {
+                this.projectCode = undefined;
+                this.region = undefined;
+                this.coountry = undefined;
+
                 if (!logger) {
                     throw new Error("Missing Logger");
                 }
@@ -41,7 +51,7 @@ class AuditLogger {
                 this.logger = logger;
                 this.options = options;
 
-                const params = logger.params
+                const params = logger.params;
 
                 this.component = params.component;
                 this.filename = params.filename;
@@ -51,7 +61,29 @@ class AuditLogger {
                 this.customer = identities.customer;
                 this.partner = identities.partner;
 
+                // Copy options attributes from logger.params
+                Object.keys(params).forEach(key => {
+                    if (key !== 'component' && key !== 'filename' && key !== 'correlationId' && key !== 'identities') {
+                        this[key] = params[key];
+                    }
+                });
+
                 this.dateTime = new Date().toISOString();
+            }
+
+            withProjectCode(region) {
+                this.projectCode = projectCode;
+                return this;
+            }
+
+            withRegion(region) {
+                this.region = region;
+                return this;
+            }
+
+            withCountry(country) {
+                this.country = country;
+                return this;
             }
 
             withCorrelationId(correlationId) {
@@ -119,8 +151,28 @@ class AuditLogger {
                 return this;
             }
 
+            resolveMessageType() {
+                let messageType = "audit";
+                if (this.recordAuditFlag) {
+                    messageType += "_record";
+                }
+                if (this.isSenstiveData) {
+                    messageType += "_sensitive";
+                }
+                return messageType;
+            }
 
             build() {
+                if (this.recordAuditFlag) {
+                    const requiredAttributes = ["projectCode", "partner", "customer", "component", "region", "country"];
+                    for (let attr of requiredAttributes) {
+                        if (!this[attr]) {
+                            throw new Error(`Setting recordAuditFlag=true, requires mandatory attributes: [${requiredAttributes}]`);
+                        }
+                    }
+                }
+
+                this.messageType = this.resolveMessageType();
                 return new AuditLogger(this);
             }
         }
@@ -129,8 +181,11 @@ class AuditLogger {
     }
 
     toAuditMessage() {
-        return {
-            messageType: "audit",
+        const message = {
+            projectCode: this.projectCode,
+            region: this.region,
+            country: this.country,
+            messageType: this.messageType,
             dateTime: this.dateTime,
             correlationId: this.correlationId,
             component: this.component,
@@ -143,12 +198,30 @@ class AuditLogger {
             entityStatus: this.entityStatus,
             workflowInfo: this.workflowInfo,
             workflowStatus: this.workflowStatus,
-            error: this.error
+            error: this.error,
+            recordAuditFlag: this.recordAuditFlag
         };
+
+        // Add options attributes from logger.params
+        const params = this.logger.params;
+        Object.keys(params).forEach(key => {
+            if (key !== 'component' &&
+                key !== 'filename' &&
+                key !== 'correlationId' &&
+                key !== 'identities' &&
+                !message.hasOwnProperty(key)) {
+                message[key] = params[key];
+            }
+        });
+
+        return message;
     }
+
     generateAuditlog() {
         try {
-            console.log(JSON.stringify(this.toAuditMessage()));
+            if (!this.isSenstiveData) {
+                console.log(JSON.stringify(this.toAuditMessage()));
+            }
         } catch (err) {
             console.error(err);
         }
