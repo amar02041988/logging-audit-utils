@@ -5,15 +5,15 @@ class AuditLogger {
         this.region = builder.region;
         this.country = builder.country;
 
+        this.customer = builder.customer;
+        this.partner = builder.partner;
+
+        this.apiKeyId = builder.apiKeyId;
         this.logger = builder.logger;
         this.dateTime = builder.dateTime;
-        this.projectCode = builder.projectCode;
-        this.country = builder.country;
 
         this.component = builder.component;
         this.filename = builder.filename;
-        this.customer = builder.customer;
-        this.partner = builder.partner;
         this.correlationId = builder.correlationId;
 
         this.stepCategory = builder.stepCategory;
@@ -43,6 +43,7 @@ class AuditLogger {
                 this.projectCode = undefined;
                 this.region = undefined;
                 this.coountry = undefined;
+                this.apiKeyId = undefined
 
                 if (!logger) {
                     throw new Error("Missing Logger");
@@ -83,6 +84,11 @@ class AuditLogger {
 
             withCountry(country) {
                 this.country = country;
+                return this;
+            }
+
+            withApiKeyId(apiKeyId) {
+                this.apiKeyId = apiKeyId;
                 return this;
             }
 
@@ -164,11 +170,15 @@ class AuditLogger {
 
             build() {
                 if (this.recordAuditFlag) {
-                    const requiredAttributes = ["projectCode", "partner", "customer", "component", "region", "country"];
+                    const requiredAttributes = ["projectCode", "component", "region", "country"];
                     for (let attr of requiredAttributes) {
                         if (!this[attr]) {
                             throw new Error(`Setting recordAuditFlag=true, requires mandatory attributes: [${requiredAttributes}]`);
                         }
+                    }
+
+                   if(!this.partner && !this.customer && !this.apiKeyId) {
+                        throw new Error("Setting recordAuditFlag=true, requires either [partner, customer] or [apiKeyId] to be set");
                     }
                 }
 
@@ -182,16 +192,17 @@ class AuditLogger {
 
     toAuditMessage() {
         const message = {
+            messageType: this.messageType,
             projectCode: this.projectCode,
             region: this.region,
             country: this.country,
-            messageType: this.messageType,
-            dateTime: this.dateTime,
-            correlationId: this.correlationId,
-            component: this.component,
-            filename: this.filename,
             customer: this.customer,
             partner: this.partner,
+            apiKeyId: this.apiKeyId,
+            component: this.component,
+            dateTime: this.dateTime,
+            correlationId: this.correlationId,
+            filename: this.filename,
             stepCategory: this.stepCategory,
             stepStatus: this.stepStatus,
             entity: this.entity,
