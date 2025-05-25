@@ -1,6 +1,6 @@
 {
   "name": "logging-audit-utils",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "description": "A comprehensive logging and audit utility with support for dynamic attributes and audit logging",
   "main": "index.js",
   "files": [
