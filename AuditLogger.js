@@ -8,6 +8,8 @@ class AuditLogger {
         this.customer = builder.customer;
         this.partner = builder.partner;
 
+        this.clientId = builder.clientId;
+
         this.apiKeyId = builder.apiKeyId;
         this.logger = builder.logger;
         this.dateTime = builder.dateTime;
@@ -43,7 +45,8 @@ class AuditLogger {
                 this.projectCode = undefined;
                 this.region = undefined;
                 this.coountry = undefined;
-                this.apiKeyId = undefined
+                this.apiKeyId = undefined;
+                this.clientId = undefined;
 
                 if (!logger) {
                     throw new Error("Missing Logger");
@@ -84,6 +87,11 @@ class AuditLogger {
 
             withCountry(country) {
                 this.country = country;
+                return this;
+            }
+
+            withClientId(clientId) {
+                this.clientId = clientId;
                 return this;
             }
 
@@ -177,8 +185,8 @@ class AuditLogger {
                         }
                     }
 
-                   if(!this.partner && !this.customer && !this.apiKeyId) {
-                        throw new Error("Setting recordAuditFlag=true, requires either [partner, customer] or [apiKeyId] to be set");
+                    if (!this.partner && !this.customer && !this.clientId) {
+                        throw new Error("Setting recordAuditFlag=true, requires either [partner, customer] or [clientId] to be set");
                     }
                 }
 
@@ -199,6 +207,7 @@ class AuditLogger {
             customer: this.customer,
             partner: this.partner,
             apiKeyId: this.apiKeyId,
+            clientId: this.clientId,
             component: this.component,
             dateTime: this.dateTime,
             correlationId: this.correlationId,

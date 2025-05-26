@@ -26,7 +26,7 @@ auditLogger.withStepCategory("invocation").withEntity("ip")
     .withProjectCode("intel")
     .withRegion("eu")
     .withCountry("it")
-    .withApiKeyId("api-key-id")
+    .withClientId("client-id")
     .build().
     generateAuditlog();
 
