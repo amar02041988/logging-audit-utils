@@ -7,6 +7,22 @@
 
 A comprehensive logging and audit utility for Node.js applications that provides structured logging with Winston and audit logging capabilities. This utility helps in maintaining consistent logging patterns and audit trails across applications.
 
+## Table of Contents
+
+- [Quick Start](#quick-start)
+- [Why logging-audit-utils?](#why-logging-audit-utils)
+- [Features](#features)
+- [API Reference](#api-reference)
+- [Configuration](#configuration)
+- [Migration Guide](#migration-guide)
+- [Troubleshooting](#troubleshooting)
+- [Requirements](#requirements)
+- [Best Practices](#best-practices)
+- [Contributing](#contributing)
+- [License](#license)
+- [Author](#author)
+- [Support](#support)
+
 ## Quick Start
 
 ```bash
@@ -42,6 +58,16 @@ const auditLogger = new AuditLogger.Builder(logger)
 
 auditLogger.generateAuditlog();
 ```
+
+## Why logging-audit-utils?
+
+- **Consistent Logging**: Enforces a standard logging format across your entire application
+- **Audit Trail**: Built-in support for audit logging with mandatory attributes
+- **Dynamic Attributes**: Flexible attribute system that adapts to your needs
+- **Correlation**: Easy request tracing with correlation IDs
+- **Security**: Built-in support for handling sensitive data
+- **Production Ready**: Battle-tested in production environments
+- **Zero Configuration**: Works out of the box with sensible defaults
 
 ## Features
 
@@ -124,6 +150,61 @@ Statuses.WORKFLOW.FAILED
 - `warn`: Warning conditions
 - `info`: Informational messages
 - `debug`: Debug messages
+
+## Migration Guide
+
+### From Winston
+
+If you're currently using Winston directly, migration is straightforward:
+
+```javascript
+// Before
+const winston = require('winston');
+const logger = winston.createLogger({...});
+
+// After
+const { Logger } = require('logging-audit-utils');
+const logger = Logger.getLogger('filename', 'corr-123', {
+    partner: 'partner',
+    customer: 'customer'
+});
+```
+
+### From Other Logging Libraries
+
+1. Replace your existing logger initialization with `Logger.getLogger()`
+2. Add correlation ID to your logging calls
+3. Use the audit logger for audit-related logging
+4. Update your log format to match the new structure
+
+## Troubleshooting
+
+### Common Issues
+
+1. **Missing Mandatory Attributes**
+   ```
+   Error: Setting recordAuditFlag=true, requires mandatory attributes: [projectCode, component]
+   ```
+   Solution: Ensure all required attributes are set when using `recordAuditFlag`
+
+2. **Logger Not Initialized**
+   ```
+   Error: Missing Logger
+   ```
+   Solution: Always provide a logger instance to AuditLogger.Builder
+
+3. **Correlation ID Issues**
+   ```
+   Error: Invalid correlation ID
+   ```
+   Solution: Ensure correlation ID is a non-empty string
+
+### Debug Mode
+
+Enable debug mode to see detailed logging information:
+```javascript
+process.env.LOG_LEVEL = 'debug';
+```
 
 ## Requirements
 
