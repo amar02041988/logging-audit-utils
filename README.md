@@ -85,10 +85,37 @@ The base logger class that provides structured logging capabilities.
 
 #### Methods
 
-- `Logger.getLogger(filename, correlationId, identities)`: Creates a new logger instance
+- `Logger.getLogger(filename, correlationId, identities, optionalAttributes)`: Creates a new logger instance
   - `filename`: Name of the file/module
   - `correlationId`: Unique identifier for request tracing
   - `identities`: Object containing customer and partner information
+  - `optionalAttributes`: (Optional) Additional attributes that will be included in every log message
+
+Example with optional attributes:
+```javascript
+const { Logger } = require('logging-audit-utils');
+
+// Basic usage
+const logger = Logger.getLogger('handler', 'corr-123', {
+    partner: 'partner',
+    customer: 'customer'
+});
+
+// With optional attributes
+const logger = Logger.getLogger('handler', 'corr-123', {
+    partner: 'partner',
+    customer: 'customer'
+}, {
+    name: 'name',
+    environment: 'production',
+    serviceName: 'auth-service',
+    customField: 'value'
+});
+
+// These optional attributes will be automatically included in all log messages
+logger.info('User logged in');  // Will include name, environment, serviceName, customField
+logger.error('Error occurred'); // Will include name, environment, serviceName, customField
+```
 
 ### AuditLogger
 
@@ -123,8 +150,6 @@ Provides audit logging capabilities with support for mandatory and optional attr
 When `recordAuditFlag` is set to `true`, the following attributes are mandatory:
 - `projectCode`
 - `component`
-- `region`
-- `country`
 
 Additionally, either `partner` and `customer` or `clientId` must be set.
 
