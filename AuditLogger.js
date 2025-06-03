@@ -178,7 +178,7 @@ class AuditLogger {
 
             build() {
                 if (this.recordAuditFlag) {
-                    const requiredAttributes = ["projectCode", "component", "region", "country"];
+                    const requiredAttributes = ["projectCode", "component"];
                     for (let attr of requiredAttributes) {
                         if (!this[attr]) {
                             throw new Error(`Setting recordAuditFlag=true, requires mandatory attributes: [${requiredAttributes}]`);
