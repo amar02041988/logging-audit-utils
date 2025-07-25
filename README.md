@@ -94,6 +94,17 @@ Parameters:
 - `optionalAttributes`: (Optional) Additional attributes included in every log message
 
 Example:
+
+- Method signature:
+
+Logger.getLogger('filename', 'correlation_id', { identity object }, { **custom parameters** });
+
+Here custom parameter object can contain any number of custo attributes for which there is no **with** style builder function.
+custom parameters can also have same name as parameters that are already available with **with** style builder function.
+So if you set the value for the same attribute at both the places, i.e custom parameter object and also using **with** style builder function, then **with** style builder function will take the precedence.
+
+Hence, its recommended to put those parameters in custom parameter object which will not change for every audit log statement, rather it will act as one time attribute setup, such as country, projectCode, env, etc.
+
 ```javascript
 const logger = Logger.getLogger('handler', 'corr-123', {
     partner: 'partner',
@@ -110,6 +121,8 @@ const logger = Logger.getLogger('handler', 'corr-123', {
 
 ```javascript
 new AuditLogger.Builder(logger)
+    .withEnv("dev")   
+    .withMessageType("record_audit_sensitive");
     .withStepCategory(category)
     .withEntity(entity)
     .withStepStatus(status)
@@ -117,6 +130,9 @@ new AuditLogger.Builder(logger)
     .withProjectCode(code)
     .build()
 ```
+
+- Here, env attribute is optional. If not found in getLogger function's custom parameter section which is an object, 
+  and if also not found here while setting the builder attribute, then env is not considered. So, if the message type is record_audit or record_audit_sensitive then these logs are saved in S3 bucket. If env was not supplied then logs will not be saved under any env folder rather it will be saved at root.
 
 Mandatory attributes when `recordAuditFlag` is true:
 - `projectCode`

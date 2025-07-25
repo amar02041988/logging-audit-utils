@@ -1,3 +1,5 @@
+const { sendMessage } = require('./QueueHelper.js');
+
 class AuditLogger {
 
     constructor(builder) {
@@ -35,8 +37,10 @@ class AuditLogger {
         this.recordAuditQuery = builder.recordAuditQuery;
         this.recordAuditFlag = builder.recordAuditFlag || false;
         this.isSenstiveData = builder.isSenstiveData || false;
+        this.isPushInQueue = builder.isPushInQueue || false;
         this.messageType = builder.messageType;
         this.options = builder.options;
+        this.env = builder.env;
     }
 
     static get Builder() {
@@ -73,6 +77,11 @@ class AuditLogger {
                 });
 
                 this.dateTime = new Date().toISOString();
+            }
+
+            withEnv(env) {
+                this.env = env;
+                return this;
             }
 
             withProjectCode(projectCode) {
@@ -160,8 +169,9 @@ class AuditLogger {
                 this.recordAuditFlag = isRecordAuditFlag;
                 return this;
             }
-            withRecordAuditQuery(recordAuditQuery) {
-                this.recordAuditQuery = recordAuditQuery;
+
+            withIsPushInQueue(isPushInQueue) {
+                this.isPushInQueue = isPushInQueue;
                 return this;
             }
 
@@ -177,6 +187,10 @@ class AuditLogger {
             }
 
             build() {
+                if (this.isPushInQueue && !this.options.queueUrl) {
+                    throw new Error("Require queueUrl in options, as pushInQueue is set to true");
+                }
+
                 if (this.recordAuditFlag) {
                     const requiredAttributes = ["projectCode", "component"];
                     for (let attr of requiredAttributes) {
@@ -200,6 +214,7 @@ class AuditLogger {
 
     toAuditMessage() {
         const message = {
+            env: this.env,
             messageType: this.messageType,
             projectCode: this.projectCode,
             region: this.region,
@@ -219,7 +234,8 @@ class AuditLogger {
             workflowInfo: this.workflowInfo,
             workflowStatus: this.workflowStatus,
             error: this.error,
-            recordAuditFlag: this.recordAuditFlag
+            recordAuditFlag: this.recordAuditFlag,
+            isPushInQueue: this.isPushInQueue,
         };
 
         // Add options attributes from logger.params
@@ -239,8 +255,21 @@ class AuditLogger {
 
     generateAuditlog() {
         try {
+            const logStatementObj = this.toAuditMessage();
             if (!this.isSenstiveData) {
-                console.log(JSON.stringify(this.toAuditMessage()));
+                console.log(JSON.stringify(logStatementObj));
+            }
+
+            if (logStatementObj.isPushInQueue && this.options.queueUrl) {
+                console.log(`Pushing log statement to queue: ${this.options.queueUrl}`);
+                // Call sendMessage, but don't await since generateAuditlog can't be async
+                sendMessage(this.options.queueUrl, JSON.stringify(logStatementObj))
+                    .then(() => {
+                        console.log(`${logStatementObj["correlationId"]} - Pushed in Queue`);
+                    })
+                    .catch((err) => {
+                        console.error(`Failed to push in Queue:`, err);
+                    });
             }
         } catch (err) {
             console.error(err);

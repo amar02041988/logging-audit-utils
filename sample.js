@@ -13,7 +13,7 @@ let options = {
     }
 }
 
-const logger = Logger.getLogger("sample", options.correlation_id, options.identites);
+const logger = Logger.getLogger("sample", options.correlation_id, options.identites, { entity: "mysample" });
 // logger.info("Sample Log");
 
 let auditLogger = new AuditLogger.Builder(logger, options);
